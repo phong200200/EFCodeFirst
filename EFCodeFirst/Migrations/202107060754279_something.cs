@@ -12,23 +12,26 @@ namespace EFCodeFirst.Migrations
             DropForeignKey("dbo.CourseInstructor", "InstructorID", "dbo.Instructor");
             DropForeignKey("dbo.CourseInstructor", "CourseID", "dbo.Course");
             DropForeignKey("dbo.Enrollment", "StudentID", "dbo.Student");
-            DropForeignKey("dbo.Enrollment", "CourseID", "dbo.Course");
+            
             DropForeignKey("dbo.Course", "DepartmentID", "dbo.Department");
             DropForeignKey("dbo.Department", "InstructorID", "dbo.Instructor");
             DropForeignKey("dbo.OfficeAssignment", "InstructorID", "dbo.Instructor");
-            DropIndex("dbo.CourseInstructor", new[] { "InstructorID" });
+            DropForeignKey("dbo.Enrollment", "CourseID", "dbo.Course");
             DropIndex("dbo.CourseInstructor", new[] { "CourseID" });
             DropIndex("dbo.Enrollment", new[] { "StudentID" });
             DropIndex("dbo.Enrollment", new[] { "CourseID" });
             DropIndex("dbo.OfficeAssignment", new[] { "InstructorID" });
             DropIndex("dbo.Department", new[] { "InstructorID" });
             DropIndex("dbo.Course", new[] { "DepartmentID" });
+            DropIndex("dbo.CourseInstructor", new[] { "InstructorID" });
+            
+            
+            DropTable("dbo.Instructor");
+            DropTable("dbo.Department");
             DropTable("dbo.CourseInstructor");
             DropTable("dbo.Student");
             DropTable("dbo.Enrollment");
             DropTable("dbo.OfficeAssignment");
-            DropTable("dbo.Instructor");
-            DropTable("dbo.Department");
             DropTable("dbo.Course");
         }
 
@@ -72,17 +75,7 @@ namespace EFCodeFirst.Migrations
                 })
                 .PrimaryKey(t => t.ID);
 
-            CreateTable(
-                "dbo.OfficeAssignment",
-                c => new
-                {
-                    InstructorID = c.Int(nullable: false),
-                    Location = c.String(maxLength: 50),
-                })
-                .PrimaryKey(t => t.InstructorID)
-                .ForeignKey("dbo.Instructor", t => t.InstructorID)
-                .Index(t => t.InstructorID);
-
+            
             CreateTable(
                 "dbo.Enrollment",
                 c => new
@@ -97,7 +90,16 @@ namespace EFCodeFirst.Migrations
                 .ForeignKey("dbo.Student", t => t.StudentID, cascadeDelete: true)
                 .Index(t => t.CourseID)
                 .Index(t => t.StudentID);
-
+            CreateTable(
+                "dbo.OfficeAssignment",
+                c => new
+                {
+                    InstructorID = c.Int(nullable: false),
+                    Location = c.String(maxLength: 50),
+                })
+                .PrimaryKey(t => t.InstructorID)
+                .ForeignKey("dbo.Instructor", t => t.InstructorID)
+                .Index(t => t.InstructorID);
             CreateTable(
                 "dbo.Student",
                 c => new
